@@ -19,4 +19,5 @@ export const config = {
   slowMo: Number(readEnv('SLOW_MO', '400')),
   holdMs: Number(readEnv('HOLD_MS', '5000')),
   // this 
+  //dbhhwbfhbjebn
 };
