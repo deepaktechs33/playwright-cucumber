@@ -1,10 +1,12 @@
 pipeline {
     agent any
 
-    // Requires: Jenkins "NodeJS" plugin, with a tool named "Node22" configured
-    // under Manage Jenkins -> Tools -> NodeJS installations.
+    // Requires: Jenkins "NodeJS" plugin, with a tool named "mynodejs2" configured
+    // under Manage Jenkins -> Tools -> NodeJS installations (matches this
+    // Jenkins instance's actual tool name -- check yours under that same
+    // page if this ever needs to change).
     tools {
-        nodejs 'Node22'
+        nodejs 'mynodejs2'
     }
 
     parameters {
