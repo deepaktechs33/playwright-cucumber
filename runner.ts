@@ -65,8 +65,10 @@ function main(): void {
   // run instead of showing just this suite.
   fs.rmSync(path.join(__dirname, 'allure-results'), { recursive: true, force: true });
 
+  const browserName = process.env.BROWSER || 'chrome (default)';
+
   console.log(
-    `\n🚀 Running "${suite}" suite${tagExpression ? ` (tags: ${tagExpression})` : ' (all scenarios, no tag filter)'}\n`
+    `\n🚀 Running "${suite}" suite${tagExpression ? ` (tags: ${tagExpression})` : ' (all scenarios, no tag filter)'} on browser: ${browserName}\n`
   );
 
   const cucumberBin = path.join(__dirname, 'node_modules', '.bin', 'cucumber-js');
