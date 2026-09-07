@@ -68,7 +68,7 @@ pipeline {
 
         stage('Install Playwright browsers') {
             steps {
-                sh 'npx playwright install chromium firefox webkit msedge'
+                sh 'npx playwright install chromium firefox webkit'
             }
         }
 
