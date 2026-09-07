@@ -9,13 +9,20 @@ pipeline {
         nodejs 'mynodejs2'
     }
 
+    triggers {
+        // Runs automatically every day at 3:00 AM (Jenkins server's local time,
+        // i.e. this Mac's clock) using the default parameter values below --
+        // no build-with-parameters prompt happens for a cron-triggered build.
+        cron('0 3 * * *')
+    }
+
     parameters {
         choice(name: 'BROWSER', choices: ['chrome', 'edge', 'firefox', 'webkit'], description: 'Browser to run against')
         // Each choice maps 1:1 to an existing "test:<suite>" script in package.json
         // (which itself runs runner.ts <suite> -- see runner.ts for the tag mapping).
         choice(
             name: 'SUITE',
-            choices: ['smoke', 'sanity', 'regression', 'positive', 'negative', 'all'],
+            choices: ['regression', 'smoke', 'sanity', 'positive', 'negative', 'all'],
             description: 'Which tagged suite to run'
         )
     }
