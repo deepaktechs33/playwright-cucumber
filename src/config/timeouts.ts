@@ -28,7 +28,7 @@ export const TIMEOUTS = {
 
   /** Waiting for the About link's navigation to actually land on
    *  saucelabs.com before this step issues its own navigation. */
-  SAUCELABS_REDIRECT: 15000,
+  SAUCELABS_REDIRECT: 30000,
 
   /** Waiting to land back on inventory.html after re-logging in. */
   INVENTORY_RETURN: 25000,
