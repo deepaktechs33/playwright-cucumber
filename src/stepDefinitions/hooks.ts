@@ -1,21 +1,26 @@
 import { Before, After, AfterStep, Status, ITestCaseHookParameter, ITestStepHookParameter } from '@cucumber/cucumber';
+import { selectors } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from 'path';
 import { CustomWorld } from '../world/CustomWorld';
 import { BrowserFactory } from '../factory/BrowserFactory';
 import { config } from '../config/config';
+import { TIMEOUTS } from '../config/timeouts';
+
+// SauceDemo marks automation hooks with data-test, not Playwright's default
+// data-testid -- this makes page.getByTestId(...) resolve against it.
+selectors.setTestIdAttribute('data-test');
 
 Before(async function (this: CustomWorld) {
   this.browser = await BrowserFactory.launchBrowser();
   this.context = await this.browser.newContext({ viewport: null });
   this.page = await this.context.newPage();
-  this.page.setDefaultTimeout(20000); // more headroom for slower engines (WebKit/Firefox) vs Chrome/Edge
+  this.page.setDefaultTimeout(TIMEOUTS.DEFAULT_ACTION); // more headroom for slower engines (WebKit/Firefox) vs Chrome/Edge
   this.initPageObjects();
-  await this.page.goto(config.appURL, { timeout: 40000 });
+  await this.page.goto(config.appURL, { timeout: TIMEOUTS.INITIAL_NAVIGATION });
 });
 
-
-After({ timeout: 15000 }, async function (this: CustomWorld, testCase: ITestCaseHookParameter) {
+After({ timeout: TIMEOUTS.AFTER_HOOK }, async function (this: CustomWorld, testCase: ITestCaseHookParameter) {
   if (testCase.result?.status === Status.FAILED) {
     await saveScreenshot(this, `${testCase.pickle.name}_FAILED`);
   }
@@ -29,9 +34,11 @@ After({ timeout: 15000 }, async function (this: CustomWorld, testCase: ITestCase
   }
 });
 
-
 AfterStep(async function (this: CustomWorld, { pickleStep }: ITestStepHookParameter) {
-  if (pickleStep.type === 'Outcome') {
+  // Opt-in only (CAPTURE_STEP_SCREENSHOTS=true) -- capturing on every passing
+  // "Then" step by default balloons screenshots/ and CI artifact size for no
+  // benefit on green runs. Failures are always captured in the After hook.
+  if (config.captureStepScreenshots && pickleStep.type === 'Outcome') {
     await saveScreenshot(this, `${pickleStep.text}_THEN`);
   }
 });
@@ -56,11 +63,7 @@ async function saveScreenshot(world: CustomWorld, fileNameBase: string): Promise
     return;
   }
   const safeName = fileNameBase.replace(/[^a-zA-Z0-9.-]/g, '_');
-  const destination = path.join(
-      process.cwd(),
-      'screenshots',
-      `${safeName}_${formatTimestamp(new Date())}.png`
-  );
+  const destination = path.join(process.cwd(), 'screenshots', `${safeName}_${formatTimestamp(new Date())}.png`);
   try {
     fs.mkdirSync(path.dirname(destination), { recursive: true });
     await world.page.screenshot({ path: destination });

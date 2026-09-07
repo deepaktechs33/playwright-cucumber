@@ -1,5 +1,6 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
+import { config } from '../config/config';
 
 // Mirrors pageObject/SortPage.java
 export class SortPage extends BasePage {
@@ -9,9 +10,10 @@ export class SortPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.sortDropdown = page.locator('.product_sort_container');
-    this.productNames = page.locator('.inventory_item_name');
-    this.productPrices = page.locator('.inventory_item_price');
+    // Verified against the live DOM (data-test attributes).
+    this.sortDropdown = page.getByTestId('product-sort-container');
+    this.productNames = page.getByTestId('inventory-item-name');
+    this.productPrices = page.getByTestId('inventory-item-price');
   }
 
   async clickSortDropdown(): Promise<void> {
@@ -21,12 +23,19 @@ export class SortPage extends BasePage {
   // The dropdown is a native <select>; selectOption() is Playwright's
   // equivalent of Selenium's Select.selectByVisibleText(). Note this sets
   // the value directly rather than visually opening/highlighting the
-  // native option list, so we pause briefly before and after in headed
-  // mode purely so the change is actually visible to a human watching.
+  // native option list, so in headed mode only we pause briefly before and
+  // after purely so the change is actually visible to a human watching.
+  // Headless (always true on CI) skips both waits entirely -- previously
+  // this ran unconditionally, burning 3s per sort action on every CI build
+  // for a "visibility" benefit nobody in a headless run can see.
   async selectSortOption(visibleText: string): Promise<void> {
-    await this.page.waitForTimeout(1500);
+    if (!config.headless) {
+      await this.page.waitForTimeout(1500);
+    }
     await this.sortDropdown.selectOption({ label: visibleText });
-    await this.page.waitForTimeout(1500);
+    if (!config.headless) {
+      await this.page.waitForTimeout(1500);
+    }
   }
 
   async getSelectedSortOption(): Promise<string> {
@@ -38,9 +47,7 @@ export class SortPage extends BasePage {
   // this sort option claims, not just that the dropdown shows it selected.
   async isSortWorkingCorrectly(sortOption: string): Promise<boolean> {
     const names = await this.productNames.allTextContents();
-    const prices = (await this.productPrices.allTextContents()).map((p) =>
-        parseFloat(p.replace('$', ''))
-    );
+    const prices = (await this.productPrices.allTextContents()).map((p) => parseFloat(p.replace('$', '')));
 
     switch (sortOption) {
       case 'Name (A to Z)':

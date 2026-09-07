@@ -11,11 +11,12 @@ export class CheckoutInfoPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.lblPageTitle = page.locator('.title');
-    this.txtFirstName = page.locator('#first-name');
-    this.txtLastName = page.locator('#last-name');
-    this.txtZip = page.locator('#postal-code');
-    this.btnContinue = page.locator('#continue');
+    // Verified against the live DOM (data-test attributes).
+    this.lblPageTitle = page.getByTestId('title');
+    this.txtFirstName = page.getByTestId('firstName');
+    this.txtLastName = page.getByTestId('lastName');
+    this.txtZip = page.getByTestId('postalCode');
+    this.btnContinue = page.getByTestId('continue');
   }
 
   async getPageTitle(): Promise<string> {

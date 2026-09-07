@@ -9,9 +9,10 @@ export class CartPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.lblPageTitle = page.locator('.title');
-    this.btnCheckout = page.locator('#checkout');
-    this.cartItemNames = page.locator('.inventory_item_name');
+    // Verified against the live DOM (data-test attributes).
+    this.lblPageTitle = page.getByTestId('title');
+    this.btnCheckout = page.getByTestId('checkout');
+    this.cartItemNames = page.getByTestId('inventory-item-name');
   }
 
   async getPageTitle(): Promise<string> {
@@ -36,15 +37,11 @@ export class CartPage extends BasePage {
   // Same slug logic as HomePage.addToCartButton, but SauceDemo's cart-page
   // remove buttons use a "remove-" id prefix instead of "add-to-cart-".
   private slug(productName: string): string {
-    return productName
-        .toLowerCase()
-        .replace(/ /g, '-')
-        .replace(/\(/g, '')
-        .replace(/\)/g, '');
+    return productName.toLowerCase().replace(/ /g, '-').replace(/\(/g, '').replace(/\)/g, '');
   }
 
   private removeButton(productName: string): Locator {
-    return this.page.locator(`#remove-${this.slug(productName)}`);
+    return this.page.getByTestId(`remove-${this.slug(productName)}`);
   }
 
   async removeProductFromCart(productName: string): Promise<void> {
@@ -55,11 +52,9 @@ export class CartPage extends BasePage {
   }
 
   // Number of product rows currently listed on the cart page.
+  // count() never throws for zero matches (like isVisible(), it's a
+  // non-waiting, non-throwing query) -- no try/catch needed.
   async getCartItemCount(): Promise<number> {
-    try {
-      return await this.cartItemNames.count();
-    } catch {
-      return 0;
-    }
+    return this.cartItemNames.count();
   }
 }

@@ -8,23 +8,20 @@ export class HomePage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.lblPageTitle = page.locator('.title');
-    this.cartIcon = page.locator('.shopping_cart_link');
-    this.cartBadge = page.locator('.shopping_cart_badge');
+    // Verified against the live DOM (data-test attributes).
+    this.lblPageTitle = page.getByTestId('title');
+    this.cartIcon = page.getByTestId('shopping-cart-link');
+    this.cartBadge = page.getByTestId('shopping-cart-badge');
   }
 
   // Same slug convention as CartPage.slug() — SauceDemo's "Add to cart"
   // buttons use an "add-to-cart-" id prefix instead of "remove-".
   private slug(productName: string): string {
-    return productName
-      .toLowerCase()
-      .replace(/ /g, '-')
-      .replace(/\(/g, '')
-      .replace(/\)/g, '');
+    return productName.toLowerCase().replace(/ /g, '-').replace(/\(/g, '').replace(/\)/g, '');
   }
 
   private addToCartButton(productName: string): Locator {
-    return this.page.locator(`#add-to-cart-${this.slug(productName)}`);
+    return this.page.getByTestId(`add-to-cart-${this.slug(productName)}`);
   }
 
   async addProductToCart(productName: string): Promise<void> {
@@ -37,12 +34,11 @@ export class HomePage extends BasePage {
     await this.cartIcon.click();
   }
 
+  // isVisible() never throws for a missing element (it just returns false
+  // immediately) -- no try/catch needed, and wrapping one here would only
+  // hide a real error (closed page, destroyed context) as a false negative.
   async isCartIconDisplayed(): Promise<boolean> {
-    try {
-      return await this.cartIcon.isVisible();
-    } catch {
-      return false;
-    }
+    return this.cartIcon.isVisible();
   }
 
   async getPageTitle(): Promise<string> {
@@ -54,10 +50,6 @@ export class HomePage extends BasePage {
   }
 
   async isCartBadgeDisplayed(): Promise<boolean> {
-    try {
-      return await this.cartBadge.isVisible();
-    } catch {
-      return false;
-    }
+    return this.cartBadge.isVisible();
   }
 }

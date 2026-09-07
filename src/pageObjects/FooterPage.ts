@@ -11,11 +11,12 @@ export class FooterPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.footer = page.locator('.footer');
-    this.footerCopyText = page.locator('.footer_copy');
-    this.twitterLink = page.locator('.social_twitter');
-    this.facebookLink = page.locator('.social_facebook');
-    this.linkedinLink = page.locator('.social_linkedin');
+    // Verified against the live DOM (data-test attributes).
+    this.footer = page.getByTestId('footer');
+    this.footerCopyText = page.getByTestId('footer-copy');
+    this.twitterLink = page.getByTestId('social-twitter');
+    this.facebookLink = page.getByTestId('social-facebook');
+    this.linkedinLink = page.getByTestId('social-linkedin');
   }
 
   // Scrolls the footer into view so its contents are actually rendered/visible before assertions run.
@@ -47,14 +48,14 @@ export class FooterPage extends BasePage {
     }
   }
 
+  // isVisible() never throws for a missing element -- no try/catch needed
+  // (see HomePage.isCartIconDisplayed for the full rationale).
   async areSocialMediaLinksDisplayed(): Promise<boolean> {
-    try {
-      const twitter = await this.twitterLink.isVisible();
-      const facebook = await this.facebookLink.isVisible();
-      const linkedin = await this.linkedinLink.isVisible();
-      return twitter && facebook && linkedin;
-    } catch {
-      return false;
-    }
+    const [twitter, facebook, linkedin] = await Promise.all([
+      this.twitterLink.isVisible(),
+      this.facebookLink.isVisible(),
+      this.linkedinLink.isVisible(),
+    ]);
+    return twitter && facebook && linkedin;
   }
 }

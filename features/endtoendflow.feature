@@ -1,5 +1,6 @@
 Feature: Add product to cart
 
+  @smoke @regression
   Scenario Outline: Add a product to the cart and complete checkout
     Given user is on the Swag Labs login page
     When user logs in with username "standard_user" and password "secret_sauce"

@@ -5,5 +5,7 @@ allure-report/
 allure-results/
 dist/
 node_modules/
+playwright-report/
 reports/
 screenshots/
+test-results/

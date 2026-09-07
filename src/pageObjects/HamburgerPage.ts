@@ -11,11 +11,15 @@ export class HamburgerPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
+    // NOTE: data-test="open-menu" exists in the DOM, but it's on a
+    // decorative <img> that's a SIBLING of the real button, not inside it --
+    // clicking it does not trigger the menu (confirmed against the live
+    // site). The real clickable element has no data-test, so id is correct here.
     this.hamburgerIcon = page.locator('#react-burger-menu-btn');
-    this.lnkAllItems = page.locator('#inventory_sidebar_link');
-    this.lnkAbout = page.locator('#about_sidebar_link');
-    this.lnkLogout = page.locator('#logout_sidebar_link');
-    this.lnkResetAppState = page.locator('#reset_sidebar_link');
+    this.lnkAllItems = page.getByTestId('inventory-sidebar-link');
+    this.lnkAbout = page.getByTestId('about-sidebar-link');
+    this.lnkLogout = page.getByTestId('logout-sidebar-link');
+    this.lnkResetAppState = page.getByTestId('reset-sidebar-link');
   }
 
   async openMenu(): Promise<void> {
@@ -38,12 +42,10 @@ export class HamburgerPage extends BasePage {
     }
   }
 
+  // isVisible() never throws for a missing element -- no try/catch needed
+  // (see HomePage.isCartIconDisplayed for the full rationale).
   async isMenuOptionDisplayed(optionName: string): Promise<boolean> {
-    try {
-      return await this.getMenuElement(optionName).isVisible();
-    } catch {
-      return false;
-    }
+    return this.getMenuElement(optionName).isVisible();
   }
 
   async clickMenuOption(optionName: string): Promise<void> {

@@ -9,6 +9,13 @@ pipeline {
 
     parameters {
         choice(name: 'BROWSER', choices: ['chrome', 'firefox', 'webkit'], description: 'Browser to run against')
+        // Each choice maps 1:1 to an existing "test:<suite>" script in package.json
+        // (which itself runs runner.ts <suite> -- see runner.ts for the tag mapping).
+        choice(
+            name: 'SUITE',
+            choices: ['smoke', 'sanity', 'regression', 'positive', 'negative', 'all'],
+            description: 'Which tagged suite to run'
+        )
     }
 
     environment {
@@ -35,6 +42,16 @@ pipeline {
             }
         }
 
+        stage('Lint & format check') {
+            steps {
+                // Fails fast before spending time installing browsers --
+                // enforces the eslint/prettier setup instead of leaving it
+                // as tooling nobody's build actually checks.
+                sh 'npm run lint'
+                sh 'npm run format:check'
+            }
+        }
+
         stage('Install Playwright browsers') {
             steps {
                 sh 'npx playwright install --with-deps chromium firefox webkit'
@@ -45,8 +62,10 @@ pipeline {
             steps {
                 // Don't let a test failure short-circuit the pipeline before
                 // reports get published — capture the exit code instead.
+                // SUITE picks which package.json "test:<suite>" script runs --
+                // e.g. selecting "smoke" here runs "npm run test:smoke".
                 script {
-                    env.TEST_EXIT_CODE = sh(script: 'npm test', returnStatus: true).toString()
+                    env.TEST_EXIT_CODE = sh(script: "npm run test:${params.SUITE}", returnStatus: true).toString()
                 }
             }
         }

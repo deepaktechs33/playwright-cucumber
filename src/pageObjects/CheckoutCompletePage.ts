@@ -8,8 +8,9 @@ export class CheckoutCompletePage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.lblConfirmationHeader = page.locator('.complete-header');
-    this.btnBackHome = page.locator('#back-to-products');
+    // Verified against the live DOM (data-test attributes).
+    this.lblConfirmationHeader = page.getByTestId('complete-header');
+    this.btnBackHome = page.getByTestId('back-to-products');
   }
 
   async getConfirmationHeader(): Promise<string> {

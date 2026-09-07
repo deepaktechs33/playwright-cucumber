@@ -3,26 +3,50 @@
   "version": "1.0.0",
   "private": true,
   "description": "SauceDemo Playwright + Cucumber (TypeScript) ",
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
-    "install:browsers": "playwright install --with-deps chromium firefox",
+    "install:browsers": "playwright install --with-deps chromium firefox webkit",
     "test": "cucumber-js",
     "test:login": "cucumber-js features/login.feature",
     "test:sort": "cucumber-js features/sort.feature",
-    "test:hamburger": "cucumber-js features/hamberger.feature",
+    "test:hamburger": "cucumber-js features/hamburger.feature",
     "test:footer": "cucumber-js features/footer.feature",
     "test:e2e": "cucumber-js features/endtoendflow.feature",
     "allure:generate": "allure generate ./allure-results --clean -o allure-report",
     "allure:open": "allure open allure-report",
-    "allure:report": "npm run allure:generate && npm run allure:open"
+    "allure:report": "npm run allure:generate && npm run allure:open",
+    "test:smoke": "ts-node runner.ts smoke",
+    "test:sanity": "ts-node runner.ts sanity",
+    "test:regression": "ts-node runner.ts regression",
+    "test:all": "ts-node runner.ts all",
+    "test:positive": "ts-node runner.ts positive",
+    "pretest": "node -e \"require('fs').rmSync('allure-results',{recursive:true,force:true})\"",
+    "pretest:login": "node -e \"require('fs').rmSync('allure-results',{recursive:true,force:true})\"",
+    "pretest:sort": "node -e \"require('fs').rmSync('allure-results',{recursive:true,force:true})\"",
+    "pretest:hamburger": "node -e \"require('fs').rmSync('allure-results',{recursive:true,force:true})\"",
+    "pretest:footer": "node -e \"require('fs').rmSync('allure-results',{recursive:true,force:true})\"",
+    "pretest:e2e": "node -e \"require('fs').rmSync('allure-results',{recursive:true,force:true})\"",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test:negative": "ts-node runner.ts negative"
   },
   "devDependencies": {
-    "@cucumber/cucumber": "^11.1.1",
+    "@cucumber/cucumber": "^13.2.1",
+    "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.49.1",
     "@types/node": "^22.10.2",
     "allure-commandline": "^2.32.0",
     "allure-cucumberjs": "^3.1.1",
     "dotenv": "^16.4.7",
+    "eslint": "^10.10.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.9.6",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.69.0"
   }
 }

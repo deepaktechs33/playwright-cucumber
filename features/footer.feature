@@ -1,5 +1,6 @@
 Feature: Footer verification
 
+  @regression
   Scenario: Verify footer content on the products page
     Given user is on the Swag Labs login page
     When user logs in with username "standard_user" and password "secret_sauce"

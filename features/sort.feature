@@ -5,6 +5,7 @@ Feature: Product sort filter verification
     When user logs in with username "standard_user" and password "secret_sauce"
     Then user should be navigated to the products page
 
+  @regression
   Scenario: Verify each sort option correctly reorders the products
     When the user opens the sort filter
     And the user selects the "Name (A to Z)" sort option

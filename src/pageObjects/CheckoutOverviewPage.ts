@@ -8,8 +8,9 @@ export class CheckoutOverviewPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.lblPageTitle = page.locator('.title');
-    this.btnFinish = page.locator('#finish');
+    // Verified against the live DOM (data-test attributes).
+    this.lblPageTitle = page.getByTestId('title');
+    this.btnFinish = page.getByTestId('finish');
   }
 
   async getPageTitle(): Promise<string> {

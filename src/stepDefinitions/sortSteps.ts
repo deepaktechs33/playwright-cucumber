@@ -13,12 +13,11 @@ When('the user selects the {string} sort option', async function (this: CustomWo
 });
 
 Then('the products should be sorted by {string}', async function (this: CustomWorld, sortOption: string) {
+  expect(await this.sortPage.getSelectedSortOption(), 'Dropdown did not show the selected sort option').toEqual(
+    sortOption
+  );
   expect(
-      await this.sortPage.getSelectedSortOption(),
-      'Dropdown did not show the selected sort option'
-  ).toEqual(sortOption);
-  expect(
-      await this.sortPage.isSortWorkingCorrectly(sortOption),
-      `Products are not actually sorted by ${sortOption}`
+    await this.sortPage.isSortWorkingCorrectly(sortOption),
+    `Products are not actually sorted by ${sortOption}`
   ).toBeTruthy();
 });

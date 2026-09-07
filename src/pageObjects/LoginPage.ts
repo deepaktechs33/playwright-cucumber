@@ -1,7 +1,6 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
 
-
 export class LoginPage extends BasePage {
   readonly txtUsername: Locator;
   readonly txtPassword: Locator;
@@ -11,15 +10,19 @@ export class LoginPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.txtUsername = page.locator('#user-name');
-    this.txtPassword = page.locator('#password');
-    this.btnLogin = page.locator('#login-button');
-    this.lblErrorMessage = page.locator("h3[data-test='error']");
+    // Verified against the live DOM: SauceDemo tags these with data-test,
+    // Playwright's semantic getByTestId locator (see hooks.ts for the
+    // data-test attribute wiring) is preferred over id/class selectors since
+    // it targets attributes meant for automation, not styling.
+    this.txtUsername = page.getByTestId('username');
+    this.txtPassword = page.getByTestId('password');
+    this.btnLogin = page.getByTestId('login-button');
+    this.lblErrorMessage = page.getByTestId('error');
+    // No data-test on the logo -- class selector is the only option here.
     this.lblAppLogo = page.locator('.login_logo');
   }
 
   async enterUsername(username: string): Promise<void> {
-  
     await this.txtUsername.fill(username);
   }
 

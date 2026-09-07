@@ -5,6 +5,7 @@ Feature: Hamburger menu navigation
     When user logs in with username "standard_user" and password "secret_sauce"
     Then user should be navigated to the products page
 
+  @regression
   Scenario: Verify hamburger menu options and navigate through About and Logout
     When the user opens the hamburger menu
     Then the menu should display the following options:
@@ -21,6 +22,7 @@ Feature: Hamburger menu navigation
 
   
 
+  @regression
   Scenario: Reset App State empties the cart
     When the user adds "Sauce Labs Backpack" to the cart
     Then the cart badge should show "1"

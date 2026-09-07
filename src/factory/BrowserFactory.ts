@@ -7,7 +7,7 @@ export class BrowserFactory {
 
     if (config.executionEnv === 'remote') {
       throw new Error(
-          'Remote execution is not wired up in this conversion — the original ' +
+        'Remote execution is not wired up in this conversion — the original ' +
           'RemoteWebDriver endpoint was a non-functional placeholder. ' +
           'Use browserType.connect(wsEndpoint) here with a real grid/cloud URL.'
       );
