@@ -10,7 +10,7 @@ pipeline {
     }
 
     parameters {
-        choice(name: 'BROWSER', choices: ['chrome', 'firefox', 'webkit'], description: 'Browser to run against')
+        choice(name: 'BROWSER', choices: ['chrome', 'edge', 'firefox', 'webkit'], description: 'Browser to run against')
         // Each choice maps 1:1 to an existing "test:<suite>" script in package.json
         // (which itself runs runner.ts <suite> -- see runner.ts for the tag mapping).
         choice(
@@ -56,7 +56,7 @@ pipeline {
 
         stage('Install Playwright browsers') {
             steps {
-                sh 'npx playwright install --with-deps chromium firefox webkit'
+                sh 'npx playwright install --with-deps chromium firefox webkit msedge'
             }
         }
 
