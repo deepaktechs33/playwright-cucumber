@@ -14,6 +14,11 @@ pipeline {
         // i.e. this Mac's clock) using the default parameter values below --
         // no build-with-parameters prompt happens for a cron-triggered build.
         cron('0 3 * * *')
+        // Checks GitHub for new commits every 2 minutes; only actually builds
+        // when something new was pushed since the last check. Also uses the
+        // default parameter values (BROWSER=chrome, SUITE=regression) since
+        // no one is picking parameters by hand for this trigger either.
+        pollSCM('H/2 * * * *')
     }
 
     parameters {
