@@ -48,7 +48,7 @@ function main(): void {
   const requested = parseSuiteArg().toLowerCase();
 
   if (!Object.prototype.hasOwnProperty.call(SUITE_TAGS, requested)) {
-    console.error(`\n❌ Unknown suite "${requested}". Valid options: ${Object.keys(SUITE_TAGS).join(', ')}\n`);
+    console.error(`\n Unknown suite "${requested}". Valid options: ${Object.keys(SUITE_TAGS).join(', ')}\n`);
     process.exit(1);
   }
 
@@ -68,7 +68,7 @@ function main(): void {
   const browserName = process.env.BROWSER || 'chrome (default)';
 
   console.log(
-    `\n🚀 Running "${suite}" suite${tagExpression ? ` (tags: ${tagExpression})` : ' (all scenarios, no tag filter)'} on browser: ${browserName}\n`
+    `\n Running "${suite}" suite${tagExpression ? ` (tags: ${tagExpression})` : ' (all scenarios, no tag filter)'} on browser: ${browserName}\n`
   );
 
   const cucumberBin = path.join(__dirname, 'node_modules', '.bin', 'cucumber-js');
@@ -79,7 +79,7 @@ function main(): void {
 
   const exitCode = result.status ?? 1;
 
-  console.log(`\n${exitCode === 0 ? '✅' : '❌'} "${suite}" suite ${exitCode === 0 ? 'passed' : 'failed'}`);
+  console.log(`\n"${suite}" suite ${exitCode === 0 ? 'passed' : 'failed'}`);
   console.log('Report: reports/cucumber-report.html | allure-report (npm run allure:report)\n');
 
   process.exit(exitCode);
