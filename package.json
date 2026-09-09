@@ -41,6 +41,7 @@
     "@types/node": "^22.10.2",
     "allure-commandline": "^2.32.0",
     "allure-cucumberjs": "^3.1.1",
+    "commander": "^15.0.0",
     "dotenv": "^16.4.7",
     "eslint": "^10.10.0",
     "eslint-config-prettier": "^10.1.8",

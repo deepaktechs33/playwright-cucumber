@@ -15,9 +15,12 @@
  *   smoke       -> @smoke        quick critical-path check (login + checkout)
  *   sanity      -> @sanity       fastest post-deploy check (login only)
  *   regression  -> @regression   full functional coverage
+ *   positive    -> @positive     positive-path scenarios only
+ *   negative    -> @negative     negative-path scenarios only
  *   all         -> (no filter)   every scenario in features/**
  */
 
+import { Command } from 'commander';
 import { spawnSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -33,26 +36,7 @@ const SUITE_TAGS: Record<Suite, string | null> = {
   all: null,
 };
 
-function parseSuiteArg(): string {
-  const args = process.argv.slice(2);
-  for (let i = 0; i < args.length; i++) {
-    const arg = args[i];
-    if ((arg === '--suite' || arg === '-s') && args[i + 1]) return args[i + 1];
-    if (arg.startsWith('--suite=')) return arg.split('=')[1];
-    if (!arg.startsWith('-')) return arg;
-  }
-  return 'all';
-}
-
-function main(): void {
-  const requested = parseSuiteArg().toLowerCase();
-
-  if (!Object.prototype.hasOwnProperty.call(SUITE_TAGS, requested)) {
-    console.error(`\n Unknown suite "${requested}". Valid options: ${Object.keys(SUITE_TAGS).join(', ')}\n`);
-    process.exit(1);
-  }
-
-  const suite = requested as Suite;
+function run(suite: Suite): void {
   const tagExpression = SUITE_TAGS[suite];
 
   const cliArgs: string[] = [];
@@ -85,4 +69,22 @@ function main(): void {
   process.exit(exitCode);
 }
 
-main();
+const program = new Command();
+
+program
+  .name('runner')
+  .description('Tag-based Cucumber suite runner')
+  .argument('[suite]', `suite to run: ${Object.keys(SUITE_TAGS).join(', ')}`, 'all')
+  .option('-s, --suite <name>', 'suite to run (alternative to positional argument)')
+  .action((positionalSuite: string, options: { suite?: string }) => {
+    const requested = (options.suite ?? positionalSuite).toLowerCase();
+
+    if (!Object.prototype.hasOwnProperty.call(SUITE_TAGS, requested)) {
+      console.error(`\n Unknown suite "${requested}". Valid options: ${Object.keys(SUITE_TAGS).join(', ')}\n`);
+      process.exit(1);
+    }
+
+    run(requested as Suite);
+  });
+
+program.parse();
