@@ -17,7 +17,7 @@
  *   regression  -> @regression   full functional coverage
  *   positive    -> @positive     positive-path scenarios only
  *   negative    -> @negative     negative-path scenarios only
- * 
+ *
  */
 
 import { Command } from 'commander';
