@@ -29,10 +29,15 @@ When(
   'the user navigates back to the previous page',
   { timeout: TIMEOUTS.HAMBURGER_BACK_NAVIGATION_STEP },
   async function (this: CustomWorld) {
-    // Wait for the "About" click's navigation to actually land on saucelabs.com
+    // Wait for the "About" click's navigation to actually leave our app
     // before issuing our own navigation — prevents the two navigations from
     // racing in the same page, which was leaving the login form blank/unsubmitted.
-    await this.page.waitForURL(/saucelabs\.com/, { timeout: TIMEOUTS.SAUCELABS_REDIRECT });
+    // Checks that we left OUR app rather than asserting we landed on
+    // saucelabs.com specifically — Sauce Labs' own marketing site being
+    // briefly slow or unreachable from CI shouldn't fail our build.
+    await this.page.waitForURL((url) => !url.toString().startsWith(config.appURL), {
+      timeout: TIMEOUTS.SAUCELABS_REDIRECT,
+    });
 
     await this.page.goto(config.appURL);
     await this.loginPage.login(STANDARD_USER.username, STANDARD_USER.password);
