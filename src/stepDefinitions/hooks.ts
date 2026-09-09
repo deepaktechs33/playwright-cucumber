@@ -11,7 +11,7 @@ import { TIMEOUTS } from '../config/timeouts';
 // data-testid -- this makes page.getByTestId(...) resolve against it.
 selectors.setTestIdAttribute('data-test');
 
-Before(async function (this: CustomWorld) {
+Before({ timeout: TIMEOUTS.BEFORE_HOOK }, async function (this: CustomWorld) {
   this.browser = await BrowserFactory.launchBrowser();
   this.context = await this.browser.newContext({ viewport: null });
   this.page = await this.context.newPage();

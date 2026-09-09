@@ -35,4 +35,9 @@ export const TIMEOUTS = {
 
   /** Waiting to land back on the login page after Logout. */
   LOGIN_PAGE_RETURN: 10000,
+
+  /** Ceiling for the whole Before hook (browser launch + context + page +
+   *  initial navigation) -- must exceed INITIAL_NAVIGATION, or that allowance
+   *  is unreachable since Cucumber kills the hook at its own timeout first. */
+  BEFORE_HOOK: 45000,
 } as const;
